@@ -4,10 +4,10 @@ namespace OOP9
     {
         static void Main(string[] args)
         {
-            Supermarket supermarket = new Supermarket();
-
             const string CommandGoSupermarket = "1";
             const string CommandExit = "2";
+            
+            Supermarket supermarket = new Supermarket();
 
             Console.WriteLine($"{CommandGoSupermarket} - ЗАЙТИ В СУПЕРМАРКЕТ" + $"\n{CommandExit} - ВЫХОД");
 
