@@ -1,13 +1,13 @@
-﻿namespace OOP9
+namespace OOP9
 {
     internal class Program
     {
         static void Main(string[] args)
         {
+            Supermarket supermarket = new Supermarket();
+
             const string CommandGoSupermarket = "1";
             const string CommandExit = "2";
-            
-            Supermarket supermarket = new Supermarket();
 
             Console.WriteLine($"{CommandGoSupermarket} - ЗАЙТИ В СУПЕРМАРКЕТ" + $"\n{CommandExit} - ВЫХОД");
 
@@ -20,7 +20,7 @@
 
                 if (CommandGoSupermarket == userInput)
                 {
-                    supermarket.Trade();
+                    supermarket.Trade(supermarket);
                 }
                 else if(CommandExit == userInput)
                 {
@@ -36,27 +36,29 @@
 
     class Supermarket
     {
-        protected List<Product> _listProducts = new List<Product>();
-        protected Queue<Client> _customerQueue = new Queue<Client>();
+        private List<Product> _listProducts = new List<Product>();
+        private Queue<Client> _customerQueue = new Queue<Client>();
 
         public Supermarket()
         {
             AddProducts();
+
+            AddQueueCustomers();
         }
 
-        public void Trade()
-        {
+        public void Trade(Supermarket supermarket)
+        {            
             Client client = new Client();
 
             string goCheckOut = "касса";
 
-            while (client.ListCustomers() > 0)
+            while (_customerQueue.Count > 0)
             {
                 ShowProductMagazine();
 
                 Console.WriteLine("\nЧтобы подойти к кассе введите - " + goCheckOut);
-                Console.WriteLine("\nВ супермаркет зашёл(а) - " + client._customerQueue.Peek().Name);
-                Console.WriteLine("У него в кармане - " + client._customerQueue.Peek().Money + " рублей.");
+                Console.WriteLine("\nВ супермаркет зашёл(а) - " + _customerQueue.Peek().Name);
+                Console.WriteLine("У него в кармане - " + _customerQueue.Peek().Money + " рублей.");
 
                 Console.Write("\nВведите название продуктов: ");
                 string userInput = Console.ReadLine();
@@ -70,12 +72,12 @@
                 else if (userInput == goCheckOut)
                 {
                     Console.Clear();
-                    Console.WriteLine("К кассе подошёл - " + client._customerQueue.Peek().Name);
-                    Console.WriteLine("У него в кармане - " + client._customerQueue.Peek().Money + " рублей.");
+                    Console.WriteLine("К кассе подошёл - " + _customerQueue.Peek().Name);
+                    Console.WriteLine("У него в кармане - " + _customerQueue.Peek().Money + " рублей.");
 
                     client.ShowProductsBasket();
 
-                    client.TryPaidProduct();
+                    client.TryPaidProduct(supermarket);
                 }
                 else
                 {
@@ -85,6 +87,18 @@
                     Console.Clear();
                 }
             }
+        }
+
+        public Client ShowFirstItemBeginningQueue()
+        {
+            var customer = _customerQueue.Peek();
+            return customer;
+        }
+
+        public string DequeueFirstItemList()
+        {
+            string customer = _customerQueue.Dequeue().Name;
+            return customer;
         }
 
         public bool TryGetProduct(out Product product, string userInput)
@@ -103,6 +117,16 @@
             return false;
         }
 
+        private void ShowProductMagazine()
+        {
+            Console.WriteLine("\nПродукты супермаркета: ");
+
+            for (int i = 0; i < _listProducts.Count; i++)
+            {
+                Console.WriteLine("Название - " + _listProducts[i].СommodityName + ", Цена - " + _listProducts[i].СommodityPrice);
+            }
+        }
+
         private void AddProducts()
         {
             _listProducts.Add(new Product("Хлеб", 50));
@@ -114,20 +138,19 @@
             _listProducts.Add(new Product("Вода", 20));
         }
 
-        private void ShowProductMagazine()
+        private void AddQueueCustomers()
         {
-            Console.WriteLine("\nПродукты супермаркета: ");
-
-            for (int i = 0; i < _listProducts.Count; i++)
-            {
-                Console.WriteLine("Название - " + _listProducts[i].СommodityName + ", Цена - " + _listProducts[i].СommodityPrice);
-            }
+            _customerQueue.Enqueue(new Client("Вася", 100));
+            _customerQueue.Enqueue(new Client("Ваня", 233));
+            _customerQueue.Enqueue(new Client("Алёна", 341));
+            _customerQueue.Enqueue(new Client("Катя", 555));
+            _customerQueue.Enqueue(new Client("Женя", 1000));
         }
     }
 
-    class Client : Supermarket
+    class Client 
     {
-        private List<Product> _productsBasket = new List<Product>();       
+        private List<Product> _productsBasket = new List<Product>();
         private int _moneyMustPaid = 0;
         private int _moneyPay;
 
@@ -137,29 +160,23 @@
             Money = cash;
         }
 
-        public Client()
-        {
-            AddQueueCustomers();
+        public Client() 
+        {         
         }
 
         public string Name { get; private set; }
 
         public int Money { get; private set; }
 
-        public int ListCustomers()
-        {
-            return _customerQueue.Count;
-        }
-
-        public bool TryPaidProduct()
+        public bool TryPaidProduct(Supermarket supermarket)
         {
             NecessaryPayCustomer();
 
-            _moneyPay = _customerQueue.Peek().Money;
+            _moneyPay = supermarket.ShowFirstItemBeginningQueue().Money;
 
             if (_moneyPay >= _moneyMustPaid)
             {
-                Buy();
+                Buy(supermarket);
 
                 return true;
             }
@@ -167,7 +184,7 @@
             {
                 PayProducts();
 
-                Buy();
+                Buy(supermarket);
 
                 return false;
             }
@@ -193,9 +210,9 @@
             }
         }
 
-        private void Buy()
+        private void Buy(Supermarket supermarket)
         {
-            var customer = _customerQueue.Peek().Name;
+            var customer = supermarket.ShowFirstItemBeginningQueue().Name;
 
             if(_moneyMustPaid <= 0)
             {
@@ -219,7 +236,7 @@
             _moneyMustPaid = 0;
             _productsBasket.Clear();
 
-            customer = _customerQueue.Dequeue().Name;
+            customer = supermarket.DequeueFirstItemList();
 
             Console.Write("\nЧтобы зашёл следующий покупатель нажмите любую клавишу...");
             Console.ReadKey();
@@ -269,16 +286,7 @@
             Console.WriteLine("\nЗдравствуйте. С вас - " + _moneyMustPaid + " рублей.");
             Console.Write("\nДля оплаты нажмите любую клавишу...");
             Console.ReadKey();
-        }
-
-        private void AddQueueCustomers()
-        {
-            _customerQueue.Enqueue(new Client("Вася", 100));
-            _customerQueue.Enqueue(new Client("Ваня", 233));
-            _customerQueue.Enqueue(new Client("Алёна", 341));
-            _customerQueue.Enqueue(new Client("Катя", 555));
-            _customerQueue.Enqueue(new Client("Женя", 1000));
-        }
+        }        
     }
 
     class Product
