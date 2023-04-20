@@ -6,7 +6,7 @@ namespace OOP9
         {
             const string CommandGoSupermarket = "1";
             const string CommandExit = "2";
-            
+
             Supermarket supermarket = new Supermarket();
 
             Console.WriteLine($"{CommandGoSupermarket} - ЗАЙТИ В СУПЕРМАРКЕТ" + $"\n{CommandExit} - ВЫХОД");
@@ -54,7 +54,7 @@ namespace OOP9
 
             while (_customerQueue.Count > 0)
             {
-                ShowProductMagazine();
+                ShowProductsMagazine();
 
                 Console.WriteLine("\nЧтобы подойти к кассе введите - " + goCheckOut);
                 Console.WriteLine("\nВ супермаркет зашёл(а) - " + _customerQueue.Peek().Name);
@@ -101,7 +101,7 @@ namespace OOP9
             return customer;
         }
 
-        public bool TryGetProduct(out Product product, string userInput)
+        private bool TryGetProduct(out Product product, string userInput)
         {
             product = null;
 
@@ -117,7 +117,7 @@ namespace OOP9
             return false;
         }
 
-        private void ShowProductMagazine()
+        private void ShowProductsMagazine()
         {
             Console.WriteLine("\nПродукты супермаркета: ");
 
