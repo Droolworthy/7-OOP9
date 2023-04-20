@@ -22,7 +22,7 @@ namespace OOP9
                 {
                     supermarket.Trade(supermarket);
                 }
-                else if(CommandExit == userInput)
+                else if (CommandExit == userInput)
                 {
                     isWorking = false;
                 }
@@ -47,8 +47,8 @@ namespace OOP9
         }
 
         public void Trade(Supermarket supermarket)
-        {            
-            Client client = new Client();
+        {
+            Client client = _customerQueue.Peek();
 
             string goCheckOut = "касса";
 
@@ -148,7 +148,7 @@ namespace OOP9
         }
     }
 
-    class Client 
+    class Client
     {
         private List<Product> _productsBasket = new List<Product>();
         private int _moneyMustPaid = 0;
@@ -158,10 +158,6 @@ namespace OOP9
         {
             Name = customer;
             Money = cash;
-        }
-
-        public Client() 
-        {         
         }
 
         public string Name { get; private set; }
@@ -214,7 +210,7 @@ namespace OOP9
         {
             var customer = supermarket.ShowFirstItemBeginningQueue().Name;
 
-            if(_moneyMustPaid <= 0)
+            if (_moneyMustPaid <= 0)
             {
                 Console.WriteLine("У вас нет денег для оплаты. Приходите в следующий раз...");
             }
@@ -286,7 +282,7 @@ namespace OOP9
             Console.WriteLine("\nЗдравствуйте. С вас - " + _moneyMustPaid + " рублей.");
             Console.Write("\nДля оплаты нажмите любую клавишу...");
             Console.ReadKey();
-        }        
+        }
     }
 
     class Product
