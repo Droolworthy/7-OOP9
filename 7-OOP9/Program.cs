@@ -69,7 +69,7 @@ namespace OOP9
 
                     Console.Clear();
                 }
-                else if (userInput == goCheckOut)
+                else if (userInput.ToLower() == goCheckOut.ToLower())
                 {
                     Console.Clear();
                     Console.WriteLine("К кассе подошёл - " + _customerQueue.Peek().Name);
@@ -212,7 +212,7 @@ namespace OOP9
 
             if (_moneyMustPaid <= 0)
             {
-                Console.WriteLine("У вас нет денег для оплаты. Приходите в следующий раз...");
+                Console.WriteLine("Ошибка. Недостаточно средств. Приходите в следующий раз...");
             }
             else
             {
