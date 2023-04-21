@@ -212,7 +212,7 @@ namespace OOP9
 
             if (_moneyMustPaid <= 0)
             {
-                Console.WriteLine("Ошибка. Недостаточно средств. Приходите в следующий раз...");
+                Console.WriteLine("Ошибка. Вы ничего не взяли. Приходите в следующий раз...");
             }
             else
             {
