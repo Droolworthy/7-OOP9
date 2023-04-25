@@ -82,7 +82,7 @@ namespace OOP9
 
                 Console.WriteLine($"\nДеньги клиента - {client.Money} рублей.");
 
-                Console.Write($"Введите название продукта или {exitWord} для выхода: ");
+                Console.Write($"Введите название продукта или {exitWord} для того чтобы закончить покупки: ");
                 string userInput = Console.ReadLine();
 
                 if (userInput == exitWord)
